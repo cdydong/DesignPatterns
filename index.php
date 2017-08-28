@@ -70,7 +70,7 @@ class Travel{
     }*/
     
     //很显然上面的travel方法，每加一中行为，就要加一种判断
-    //很难维护，所以用策略模式,也是要策略类类注入
+    //很难维护，所以用策略模式,也是要策略类类依赖注入，把创建类交给具体的实现，这样travel就不需要关心类的创建
     public function method(\base\Strategy $strategy){
         $this->object = $strategy;
     }
@@ -101,7 +101,7 @@ class Order{
     
 }
 
-//下面用观察者模式
+//具体的观察者，Observer抽象观察者
 class Order1 implements \base\Observer{
    public function watch(){     
         echo "下订单</br>";
@@ -123,14 +123,15 @@ class Order3 implements \base\Observer{
 $order = new Order;
 $order->create();
 echo "使用观察者模式：</br>";
-$action=new \base\CreateOrder();
-$action->registerObserver(new Order1());
+$action=new \base\CreateOrder();//被观察者
+$action->registerObserver(new Order1());//被观察者变化时，通知观察者
 $action->registerObserver(new Order2());
 $action->registerObserver(new Order3());
-$action->notify();
+$action->notify();//被观察者通知观察者，观察者做出相应的动作
 
 
 echo "<hr/>";
+
 //装饰器模式
 //有一个区域类，区域中的部分都有价值，例如森林100
 class Forest extends \base\Area{
@@ -181,16 +182,4 @@ Client::test();
 
 echo "<hr/>";
 
-$a = array(1,2,3,4,0,5);
-
-//$b = array(1,3,6,10,10,15);
-
-$c = array();
-$length = count($a);
-
-for($i=0;$i<$length;$i++){
-    $val+=$a[$i];
-    $c[$i] = $val;
-}
-var_dump($c);exit;
 //var_dump(phpinfo());exit;
